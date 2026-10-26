@@ -1,27 +1,29 @@
+// Nicolay Barreno: Método GET
+//Escenario real: datos de multicines para una entrada 
 const express = require('express');
 const app = express();
 const port = 3000;
 
-app.get("/", (req, res) => {
-    res.send("Servidor API funcionando. Rutas disponibles: /boleto-cine y /laptop-asus");
-});
-
-
-// Metodo GET para consultar la informacion de un recurso (Lectura)
-app.get("/boleto-cine", (req, res) => {
+// Método GET para consultar la información de un recurso (Lectura)
+app.get("/multicines", (req, res) => {
     res.json({
-        producto: "Boleto Entrada General 2D",
-        codigo_referencia: "CINE-2026-001",
-        precio: 6.50,
+        producto: "Entrada General 2D Multicines",
+        codigo_referencia: "MUL-2026-001",
+        precio: 6.20,
         moneda: "USD",
         complejosDisponibles: [
-            "Cineplex Centro",
-            "Cineplex Norte",
-            "Cineplex Sur"
+            "Multicines CCI",
+            "Multicines El Recreo",
+            "Multicines Scala Shopping",
+            "Multicines Condado"
         ],
-        descripcion: "Pase valido para funciones 2D en horarios regulares. No aplica para estrenos.",
-        url: "https://www.cineplex-ejemplo.com/tickets/general"
+        descripcion: "Boleto válido para funciones en formato 2D estándar. Sujeto a disponibilidad de la sala.",
+        url: "https://www.multicines.com.ec/"
     });
+});
+
+app.listen(port, () => {
+    console.log(`Servidor ejecutándose en http://localhost:${port}`);
 });
 
 // Gregory Araujo: Métodos PUT y DELETE
