@@ -26,6 +26,56 @@ app.listen(port, () => {
     console.log(`Servidor ejecutándose en http://localhost:${port}`);
 });
 
+// Jordy: Método POST (Creación) y Respuestas
+//Escenario real: registro de compra de entradas para una función de multicines
+// Método POST para registrar una nueva compra de entradas (Creación)
+app.use(express.json());
+
+let comprasRegistradas = [];
+let contadorCompras = 1;
+
+app.post("/compra-entradas", (req, res) => {
+    const datos = req.body || {};
+
+    // Validación de campos obligatorios
+    const camposObligatorios = ["complejo", "funcion", "cantidadEntradas", "nombreCliente", "correo"];
+    const camposFaltantes = camposObligatorios.filter(campo => datos[campo] === undefined || datos[campo] === "");
+
+    if (camposFaltantes.length > 0) {
+        return res.status(400).json({
+            mensaje: "Datos incompletos. No se pudo registrar la compra",
+            camposFaltantes
+        });
+    }
+
+    // Validación de la cantidad de entradas (número entero mayor a cero)
+    if (!Number.isInteger(datos.cantidadEntradas) || datos.cantidadEntradas <= 0) {
+        return res.status(400).json({
+            mensaje: "La cantidad de entradas debe ser un número entero mayor a cero"
+        });
+    }
+
+    const nuevaCompra = {
+        numero_orden: `ORD-2026-${String(contadorCompras++).padStart(3, "0")}`,
+        complejo: datos.complejo,
+        funcion: datos.funcion,
+        cantidadEntradas: datos.cantidadEntradas,
+        precioUnitario: 6.20,
+        precioTotal: +(datos.cantidadEntradas * 6.20).toFixed(2),
+        moneda: "USD",
+        nombreCliente: datos.nombreCliente,
+        correo: datos.correo,
+        estado: "Confirmada"
+    };
+    comprasRegistradas.push(nuevaCompra);
+
+    // 201 Created: confirmación de la operación de creación
+    res.status(201).json({
+        mensaje: "Compra registrada correctamente",
+        orden: nuevaCompra
+    });
+});
+
 // Gregory Araujo: Métodos PUT y DELETE
 // Escenario real: Tienda de Tecnología (Catálogo de Laptops)
 
